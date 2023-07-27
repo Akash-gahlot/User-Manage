@@ -14,4 +14,4 @@ exports.USER_NOT_FOUND_ERR = "User not found";
 
 exports.ACCESS_DENIED_ERR = "Access deny for normal user";
 
-exports.PHONE_ALREADY_EXISTS_ERR = "Phone number already exist";
+exports.EMAIL_ALREADY_EXISTS_ERR = "User  already exist , Please Login";

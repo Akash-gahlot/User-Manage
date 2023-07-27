@@ -1,11 +1,12 @@
 const express = require("express");
 require('dotenv').config();
 const app = express();
+const bodyParser = require('body-parser');
 const { API_ENDPOINT_NOT_FOUND_ERR } = require("./errors");
 const PORT = process.env.PORT || 3000;
 const connectDB = require("./server/Database/connection");
 
-
+app.use(bodyParser.json());
 app.use("/", require("./server/Routes/route"));
 //wrong endpoint handling
 app.use("*", (req, resp, next) => { 

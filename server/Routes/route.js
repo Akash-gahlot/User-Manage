@@ -4,6 +4,8 @@ const route = express.Router();
 const controller = require("../Controllers/controller");
 
 route.get("/", controller.home);
-route.get("/register", controller.register);
+route.post("/register",controller.register)
+route.post("/verify", controller.otpverify);
+route.get("/login", controller.login);
 
 module.exports = route;
