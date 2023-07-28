@@ -15,7 +15,7 @@ This is a sample project demonstrating the use of technologies Node.js, Express.
 
 Before running the application, make sure to set the following environment variables:
 
-- `MONGODB_URI`: MongoDB connection string.
+- `MONGODB_URI`: MongoDB connection string. (Not Required)
 - `SMTP_HOST`: SMTP server host.
 - `SMTP_PORT`: SMTP server port.
 - `SMTP_USER`: SMTP username.
