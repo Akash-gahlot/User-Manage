@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User Registration</title>
+</head>
+
+<body>
+    <h1>User Registration</h1>
+    <form id="registrationForm">
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" required><br>
+        <br/>
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" required><br>
+        <br />
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required><br>
+        <br />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        <br />
+        <button type="button" id="registerBtn">Register</button>
+    </form>
+    <script>
+        document.getElementById("registerBtn").addEventListener("click", async function () {
+                const formData = {
+                    firstname: document.getElementById("firstname").value,
+                    lastname: document.getElementById("lastname").value,
+                    phone: document.getElementById("phone").value,
+                    email: document.getElementById("email").value
+                };
+
+                try {
+                    const response = await fetch("/register", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const data = await response.json();
+                    if (response.ok) {
+                        // Display success message or OTP verification form
+                        console.log(data.message);
+                        if (data.message === "OTP sent to your email , please verify it for successfull registration") {
+                            const otp = prompt("Please enter the OTP sent to your email:");
+                            if (otp) {
+                                // Send POST request to verify endpoint
+                                try {
+                                    const email=formData.email;
+                                    const firstname=formData.firstname;
+                                    const lastname=formData.lastname;
+                                    const phone=formData.phone;            
+                                    const verifyResponse = await fetch("/verify", {
+                                        method: "POST",
+                                        headers: {
+                                            "Content-Type": "application/json"
+                                        },
+                                        body: JSON.stringify({ firstname,lastname,phone,email, otp,processType:"register" })
+                                    });
+
+                                    const verifyData = await verifyResponse.json();
+                                    if (verifyResponse.ok) {
+                                        alert(verifyData.message);
+                                    } else {
+                                        alert(verifyData.message);
+                                    }
+                                } catch (error) {
+                                    console.error("Error verifying OTP:", error);
+                                }
+                            }
+                        } else {
+                            alert(data.message);
+                        }
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (error) {
+                    console.error("Error registering user:", error);
+                }
+            });
+    </script>
+</body>
+
+</html>

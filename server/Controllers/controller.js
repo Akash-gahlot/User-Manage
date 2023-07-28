@@ -1,5 +1,6 @@
 const User = require("../Models/user");
 const crypto = require('crypto');
+const path = require('path');
 const { sendEmailWithOTP } = require("../Services/emailOTP");
 const { generateJWT } = require("../Services/jsonwebToken");
 
@@ -8,6 +9,7 @@ const { EMAIL_ALREADY_EXISTS_ERR,USER_NOT_FOUND_ERR } = require("/Users/akashgah
 var createotp = '';
 
 const generateOTP = () => {
+    createotp = '';
   const otpLength = 6;
   const digits = '0123456789';
   for (let i = 0; i < otpLength; i++) {
@@ -17,7 +19,7 @@ const generateOTP = () => {
 };
 exports.register = async(req, resp,next) => { 
     try {
-        const { firstname, lastname, phone, email } = req.body;
+        const { firstname, lastname, phone, email } = req.body;     
         const emailExist =  await User.findOne({ email });
         if (emailExist) {
             next({ status: 400, message: EMAIL_ALREADY_EXISTS_ERR });
@@ -42,22 +44,20 @@ exports.register = async(req, resp,next) => {
 }
 exports.otpverify = async (req, resp , next) => { 
     try {
-        const { email, otp, firstname, lastname, phone, processType } = req.body;
+        const { email, otp, firstname, lastname, phone, processType} = req.body;   
         if (processType == "login") 
         {
             if (otp == createotp) {
                 createotp = '';
                 const user = await User.findOne({ email });
                 const token = generateJWT(email);
-                resp.status(200).json({ message:"Succcessfull Login " ,user,token });
+                resp.status(200).json({ message:"Succcessfull Login , token : "+token ,user,token });
             }
             else { 
                  return resp.status(400).json({ message: 'Invalid OTP' });
             }
         }
-        else {
-            console.log("otp : " + otp);
-            console.log("createotp : "+createotp);
+        else {          
             if (otp == createotp) {
                 createotp = '';
                 const newUser = new User({
@@ -105,7 +105,28 @@ exports.login = async(req, resp, next) => {
         next(err);
     }
 }
-exports.home = async(req, resp) => { 
-    resp.send("Home route");
-   
+exports.home = async (req, resp,next) => {
+    try {
+        resp.sendFile(path.join(__dirname, '../views/home.html'));
+    }
+    catch (err) { 
+        next(err);
+    }
+}
+
+exports.registration = async (req, resp,next) => { 
+    try {
+        resp.sendFile(path.join(__dirname, '/Users/akashgahlot/Desktop/Code/Test/User Management/server/views/registration.html'));
+    }
+    catch (err) { 
+        next(err);
+    }
+}
+exports.signin = async (req, resp,next) => { 
+    try {
+        resp.sendFile(path.join(__dirname, '/Users/akashgahlot/Desktop/Code/Test/User Management/server/views/login.html'));
+    }
+    catch (err) { 
+        next(err);
+    }
 }
